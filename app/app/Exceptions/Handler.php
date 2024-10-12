@@ -25,6 +25,11 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
+        // Handling ApiException globally
+        $this->renderable(function (ApiException $e, $request) {
+            return $e->toResponse($request);
+        });
+
         // Handling NotAdminException globally
         $this->renderable(function (NotAdminException $e, $request) {
             return $e->toResponse($request);
