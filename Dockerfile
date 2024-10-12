@@ -1,11 +1,9 @@
-FROM php:8-fpm-alpine3.15 AS base
+FROM php:8.2-fpm-alpine AS base
 
 RUN apk --update add \
     alpine-sdk \
     linux-headers \
-    openssl-dev \
-    php8-pear \
-    php8-dev
+    openssl-dev
 
 RUN docker-php-ext-install pdo_mysql
 
