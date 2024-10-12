@@ -131,4 +131,66 @@ class EquipmentController extends Controller
             throw new ApiException('Unable to delete equipment', 400);
         }
     }
+
+    /**
+     * Restore a soft-deleted equipment.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function restore($id) {
+        try {
+            // Fetch the soft-deleted equipment by ID or throw a 404 if not found
+            $equipment = Equipment::withTrashed()->findOrFail($id);
+
+            // Check if the user is authorized to restore the equipment
+            $this->authorize('restore', $equipment);
+
+            // Restore the equipment (remove it from soft-deleted state)
+            $equipment->restore();
+
+            // Log the restoration with the equipment ID
+            Log::info('Equipment restored', ['equipment_id' => $equipment->id]);
+
+            // Return a success message with a 200 status code
+            return response()->json(['message' => 'Equipment restored successfully'], 200);
+        } catch (Throwable $th) {
+            // Log the error if equipment restoration fails
+            Log::error('Failed to restore equipment', ['error' => $th->getMessage()]);
+
+            // Throw a custom API exception with a 400 status code
+            throw new ApiException('Unable to restore equipment', 400);
+        }
+    }
+
+    /**
+     * Permanently delete a soft-deleted equipment from the database (force delete).
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function forceDelete($id) {
+        try {
+            // Fetch the soft-deleted equipment by ID or throw a 404 if not found
+            $equipment = Equipment::withTrashed()->findOrFail($id);
+
+            // Check if the user is authorized to permanently delete the equipment
+            $this->authorize('forceDelete', $equipment);
+
+            // Permanently delete the equipment (remove it from the database entirely)
+            $equipment->forceDelete();
+
+            // Log the permanent deletion with the equipment ID
+            Log::info('Equipment permanently deleted', ['equipment_id' => $equipment->id]);
+
+            // Return a success message with a 200 status code
+            return response()->json(['message' => 'Equipment permanently deleted successfully'], 200);
+        } catch (Throwable $th) {
+            // Log the error if permanent deletion fails
+            Log::error('Failed to permanently delete equipment', ['error' => $th->getMessage()]);
+
+            // Throw a custom API exception with a 400 status code
+            throw new ApiException('Unable to permanently delete equipment', 400);
+        }
+    }
 }

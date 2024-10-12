@@ -131,4 +131,66 @@ class FactionController extends Controller
             throw new ApiException('Unable to delete faction', 400);
         }
     }
+
+    /**
+     * Restore a soft-deleted faction.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function restore($id) {
+        try {
+            // Fetch the soft-deleted faction by ID or throw a 404 if not found
+            $faction = Faction::withTrashed()->findOrFail($id);
+
+            // Check if the user is authorized to restore the faction
+            $this->authorize('restore', $faction);
+
+            // Restore the faction (remove it from soft-deleted state)
+            $faction->restore();
+
+            // Log the restoration with the faction ID
+            Log::info('Faction restored', ['faction_id' => $faction->id]);
+
+            // Return a success message with a 200 status code
+            return response()->json(['message' => 'Faction restored successfully'], 200);
+        } catch (Throwable $th) {
+            // Log the error if faction restoration fails
+            Log::error('Failed to restore faction', ['error' => $th->getMessage()]);
+
+            // Throw a custom API exception with a 400 status code
+            throw new ApiException('Unable to restore faction', 400);
+        }
+    }
+
+    /**
+     * Permanently delete a faction from the database (force delete).
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function forceDelete($id) {
+        try {
+            // Fetch the soft-deleted faction by ID or throw a 404 if not found
+            $faction = Faction::withTrashed()->findOrFail($id);
+
+            // Check if the user is authorized to permanently delete the faction
+            $this->authorize('forceDelete', $faction);
+
+            // Permanently delete the faction (remove it from the database entirely)
+            $faction->forceDelete();
+
+            // Log the permanent deletion with the faction ID
+            Log::info('Faction permanently deleted', ['faction_id' => $faction->id]);
+
+            // Return a success message with a 200 status code
+            return response()->json(['message' => 'Faction permanently deleted successfully'], 200);
+        } catch (Throwable $th) {
+            // Log the error if permanent deletion fails
+            Log::error('Failed to permanently delete faction', ['error' => $th->getMessage()]);
+
+            // Throw a custom API exception with a 400 status code
+            throw new ApiException('Unable to permanently delete faction', 400);
+        }
+    }
 }
