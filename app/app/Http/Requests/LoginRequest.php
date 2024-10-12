@@ -2,18 +2,14 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\ValidationException;
-
-class LoginRequest extends FormRequest
+class LoginRequest extends BaseRequest
 {
-    public function authorize()
+    public function authorize() : bool
     {
         return true;
     }
 
-    public function rules()
+    public function rules() : array
     {
         return [
             'email' => 'required|string|email',
@@ -29,5 +25,4 @@ class LoginRequest extends FormRequest
             'password.required' => 'The password field is required.',
         ];
     }
-
 }
