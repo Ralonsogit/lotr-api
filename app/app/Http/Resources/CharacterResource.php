@@ -19,8 +19,8 @@ class CharacterResource extends JsonResource
             'name' => $this->name,
             'birth_date' => $this->birth_date,
             'kingdom' => $this->kingdom,
-            'equipment_id' => $this->equipment_id,
-            'faction_id' => $this->faction_id,
+            'equipment' => new EquipmentResource($this->whenLoaded('equipment')),
+            'faction' => new FactionResource($this->whenLoaded('faction')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

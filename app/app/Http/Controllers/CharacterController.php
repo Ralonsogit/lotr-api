@@ -13,7 +13,7 @@ class CharacterController extends Controller
     public function index() {
         try {
             $this->authorize('viewAny', Character::class);
-            $characters = Character::paginate(10);
+            $characters = Character::with(['equipment', 'faction'])->paginate(10);
             return response()->json(CharacterResource::collection($characters), 200);
         } catch (Throwable $th) {
             throw new ApiException('Unable to retrieve characters', 400);
@@ -24,7 +24,7 @@ class CharacterController extends Controller
         try {
             $this->authorize('create', Character::class);
             $character = Character::create($request->validated());
-            return response()->json($character, 201);
+            return response()->json(new CharacterResource($character->load(['equipment', 'faction'])), 201);
         } catch (Throwable $th) {
             throw new ApiException('Unable to create character', 400);
         }
@@ -35,7 +35,7 @@ class CharacterController extends Controller
             $character = Character::findOrFail($id);
             $this->authorize('update', $character);
             $character->update($request->validated());
-            return response()->json(new CharacterResource($character), 200);
+            return response()->json(new CharacterResource($character->load(['equipment', 'faction'])), 200);
         } catch (Throwable $th) {
             throw new ApiException('Unable to update character', 400);
         }
