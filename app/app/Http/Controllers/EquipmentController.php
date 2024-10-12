@@ -52,8 +52,9 @@ class EquipmentController extends Controller
         try {
             $equipment = Equipment::findOrFail($id);
             $this->authorize('delete', $equipment);
+            $equipmentId = $equipment->id;
             $equipment->delete();
-            Log::info('Equipment deleted', ['character_id' => $equipmentDeleted->id]);
+            Log::info('Equipment deleted', ['character_id' => $equipmentId]);
             return response()->json(['message' => 'Equipment deleted successfully'], 204);
         } catch (Throwable $th) {
             Log::error('Failed to delete equipment', ['error' => $th->getMessage()]);

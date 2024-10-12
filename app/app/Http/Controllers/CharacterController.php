@@ -52,8 +52,9 @@ class CharacterController extends Controller
         try {
             $character = Character::findOrFail($id);
             $this->authorize('delete', $character);
+            $characterId = $character->id;
             $character->delete();
-            Log::info('Character deleted', ['character_id' => $characterDeleted->id]);
+            Log::info('Character deleted', ['character_id' => $characterId]);
             return response()->json(new CharacterResource($character, ['message' => 'Character deleted successfully']), 204);
         } catch (Throwable $th) {
             Log::error('Failed to delete character', ['error' => $th->getMessage()]);

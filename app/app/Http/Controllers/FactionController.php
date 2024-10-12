@@ -52,8 +52,9 @@ class FactionController extends Controller
         try {
             $faction = Faction::findOrFail($id);
             $this->authorize('delete', $faction);
+            $factionId = $faction->id;
             $faction->delete();
-            Log::info('Faction deleted', ['character_id' => $factionDeleted->id]);
+            Log::info('Faction deleted', ['character_id' => $factionId]);
             return response()->json(['message' => 'Faction deleted successfully'], 204);
         } catch (Throwable $th) {
             Log::error('Failed to delete faction', ['error' => $th->getMessage()]);
