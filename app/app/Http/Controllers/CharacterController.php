@@ -6,6 +6,7 @@ use App\Exceptions\ApiException;
 use App\Http\Requests\CharacterRequest;
 use App\Http\Resources\CharacterResource;
 use App\Models\Character;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class CharacterController extends Controller
@@ -14,8 +15,10 @@ class CharacterController extends Controller
         try {
             $this->authorize('viewAny', Character::class);
             $characters = Character::with(['equipment', 'faction'])->paginate(10);
+            Log::info('Fetched characters', ['character_count' => $characters->total()]);
             return response()->json(CharacterResource::collection($characters), 200);
         } catch (Throwable $th) {
+            Log::error('Failed to retrieve characters', ['error' => $th->getMessage()]);
             throw new ApiException('Unable to retrieve characters', 400);
         }
     }
@@ -24,8 +27,10 @@ class CharacterController extends Controller
         try {
             $this->authorize('create', Character::class);
             $character = Character::create($request->validated());
+            Log::info('Character created', ['character_id' => $character->id]);
             return response()->json(new CharacterResource($character->load(['equipment', 'faction'])), 201);
         } catch (Throwable $th) {
+            Log::error('Failed to create character', ['error' => $th->getMessage()]);
             throw new ApiException('Unable to create character', 400);
         }
     }
@@ -35,8 +40,10 @@ class CharacterController extends Controller
             $character = Character::findOrFail($id);
             $this->authorize('update', $character);
             $character->update($request->validated());
+            Log::info('Character updated', ['character_id' => $character->id]);
             return response()->json(new CharacterResource($character->load(['equipment', 'faction'])), 200);
         } catch (Throwable $th) {
+            Log::error('Failed to update character', ['error' => $th->getMessage()]);
             throw new ApiException('Unable to update character', 400);
         }
     }
@@ -46,8 +53,10 @@ class CharacterController extends Controller
             $character = Character::findOrFail($id);
             $this->authorize('delete', $character);
             $character->delete();
+            Log::info('Character deleted', ['character_id' => $characterDeleted->id]);
             return response()->json(new CharacterResource($character, ['message' => 'Character deleted successfully']), 204);
         } catch (Throwable $th) {
+            Log::error('Failed to delete character', ['error' => $th->getMessage()]);
             throw new ApiException('Unable to delete character', 400);
         }
     }
