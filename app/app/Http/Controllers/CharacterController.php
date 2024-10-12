@@ -32,8 +32,8 @@ class CharacterController extends Controller
 
     public function update(CharacterRequest $request, $id) {
         try {
-            $this->authorize('update', Character::class);
             $character = Character::findOrFail($id);
+            $this->authorize('update', $character);
             $character->update($request->validated());
             return response()->json(new CharacterResource($character), 200);
         } catch (Throwable $th) {

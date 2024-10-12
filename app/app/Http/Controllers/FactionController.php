@@ -31,8 +31,8 @@ class FactionController extends Controller
 
     public function update(FactionRequest $request, $id) {
         try {
-            $this->authorize('update', Faction::class);
             $faction = Faction::findOrFail($id);
+            $this->authorize('update', $faction);
             $faction->update($request->validated());
             return response()->json(new FactionResource($faction), 200);
         } catch (\Throwable $th) {

@@ -31,8 +31,8 @@ class EquipmentController extends Controller
 
     public function update(EquipmentRequest $request, $id) {
         try {
-            $this->authorize('update', Equipment::class);
             $equipment = Equipment::findOrFail($id);
+            $this->authorize('update', $equipment);
             $equipment->update($request->validated());
             return response()->json(new EquipmentResource($equipment), 200);
         } catch (\Throwable $th) {
