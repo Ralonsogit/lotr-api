@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   php:
@@ -19,12 +19,12 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./opt/db:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: lotr
     healthcheck:
-      test: "/usr/bin/mysql --user=root --password=root --execute \"SHOW DATABASES;\""
+      test: '/usr/bin/mysql --user=root --password=root --execute "SHOW DATABASES;"'
       interval: 3s
       timeout: 1s
       retries: 5
@@ -33,3 +33,6 @@ services:
 
 networks:
   bridge:
+
+volumes:
+  db-data:
