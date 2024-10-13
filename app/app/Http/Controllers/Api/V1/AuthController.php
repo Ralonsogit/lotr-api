@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class AuthController extends Controller
@@ -28,6 +29,8 @@ class AuthController extends Controller
             // Return the newly created user
             return response()->json(['user' => $user], 201);
         } catch (Throwable $e) {
+            // Log error
+            Log::error('ThrowableException when registering user:', ['user_id' => $request->user()->id]);
             throw new ApiException('Unable to register user', 400);
         }
     }
@@ -50,8 +53,12 @@ class AuthController extends Controller
                 'token_type' => 'Bearer',
             ]);
         } catch (ApiException $e) {
+            // Log error
+            Log::error('ApiException when logging user:', ['user_id' => $request->user()->id]);
             throw $e;
         } catch (Throwable $th) {
+            // Log error
+            Log::error('ThrowableException when logging user:', ['user_id' => $request->user()->id]);
             throw new ApiException('Unable to log in', 400);
         }
     }
@@ -68,6 +75,8 @@ class AuthController extends Controller
 
             return response()->noContent();
         } catch (Throwable $th) {
+            // Log error
+            Log::error('ThrowableException when logging out user:', ['user_id' => $request->user()->id]);
             throw new ApiException('Unable to log out', 400);
         }
     }
