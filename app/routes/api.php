@@ -23,9 +23,6 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Add Middlewares
 Route::prefix('admin')->middleware(['auth:sanctum', 'checkAdmin'])->group(function () {
-    // Users
-    Route::get('/user', [AuthController::class, 'user']);
-
     // Factions
     Route::post('/factions', [FactionController::class, 'store']);
     Route::put('/factions/{id}', [FactionController::class, 'update']);

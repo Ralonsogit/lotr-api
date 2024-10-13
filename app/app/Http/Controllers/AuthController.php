@@ -59,20 +59,9 @@ class AuthController extends Controller
         try {
             // Delete all user tokens to revoke authentication
             $request->user()->tokens()->delete();
-            return response()->json(['message' => 'Successfully logged out']);
+            return response()->noContent();
         } catch (Throwable $th) {
             throw new ApiException('Unable to log out', 400);
-        }
-    }
-
-    // Method to get authenticated user
-    public function user(Request $request)
-    {
-        try {
-            // Return the authenticated user
-            return response()->json($request->user());
-        } catch (Throwable $th) {
-            throw new ApiException('Unable to retrieve user data', 400);
         }
     }
 }
