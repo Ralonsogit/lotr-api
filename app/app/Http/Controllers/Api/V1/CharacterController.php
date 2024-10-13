@@ -6,6 +6,7 @@ use App\Exceptions\ApiException;
 use App\Http\Requests\CharacterRequest;
 use App\Http\Resources\CharacterResource;
 use App\Models\Character;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -22,7 +23,9 @@ class CharacterController extends Controller
             $this->authorize('viewAny', Character::class);
 
             // Fetch characters with their related equipment and faction, and paginate results
-            $characters = Character::with(['equipment', 'faction'])->paginate(10);
+            $characters = Cache::remember('characters_index', 300, function () {
+                return Character::with(['equipment', 'faction'])->paginate(10);
+            });
 
             // Log success with the total number of characters fetched
             Log::info('Fetched characters', ['character_count' => $characters->total()]);
@@ -47,7 +50,9 @@ class CharacterController extends Controller
     public function show($id) {
         try {
             // Fetch the character by ID or throw a 404 if not found
-            $character = Character::findOrFail($id);
+            $character = Cache::remember("character_{$id}", 300, function () use ($id) {
+                return Character::with(['equipment', 'faction'])->findOrFail($id);
+            });
 
             // Check if the user is authorized to view the character
             $this->authorize('view', $character);
@@ -80,6 +85,9 @@ class CharacterController extends Controller
             // Create a new character with the validated request data
             $character = Character::create($request->validated());
 
+            // Clear the characters index cache to ensure fresh data
+            Cache::forget('characters_index');
+
             // Log the creation with the character ID
             Log::info('Character created', ['character_id' => $character->id]);
 
@@ -111,6 +119,10 @@ class CharacterController extends Controller
 
             // Update the character with validated request data
             $character->update($request->validated());
+
+            // Clear the specific character cache after update
+            Cache::forget("character_{$id}");
+            Cache::forget('characters_index');
 
             // Log the update with the character ID
             Log::info('Character updated', ['character_id' => $character->id]);
@@ -146,6 +158,9 @@ class CharacterController extends Controller
             // Soft delete the character (it won't be permanently removed)
             $character->delete();
 
+            // Clear the characters index cache to ensure fresh data
+            Cache::forget('characters_index');
+
             // Log the deletion with the character ID
             Log::info('Character deleted', ['character_id' => $characterId]);
 
@@ -177,6 +192,9 @@ class CharacterController extends Controller
             // Restore the character (remove it from soft-deleted state)
             $character->restore();
 
+            // Clear the characters index cache to ensure fresh data
+            Cache::forget('characters_index');
+
             // Log the restoration with the character ID
             Log::info('Character restored', ['character_id' => $character->id]);
 
@@ -207,6 +225,9 @@ class CharacterController extends Controller
 
             // Permanently delete the character (remove it from the database entirely)
             $character->forceDelete();
+
+            // Clear the characters index cache to ensure fresh data
+            Cache::forget('characters_index');
 
             // Log the permanent deletion with the character ID
             Log::info('Character permanently deleted', ['character_id' => $character->id]);

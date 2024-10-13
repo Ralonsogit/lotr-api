@@ -6,6 +6,7 @@ use App\Exceptions\ApiException;
 use App\Http\Requests\FactionRequest;
 use App\Http\Resources\FactionResource;
 use App\Models\Faction;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -22,7 +23,9 @@ class FactionController extends Controller
             $this->authorize('viewAny', Faction::class);
 
             // Fetch factions with pagination (10 per page)
-            $factions = Faction::paginate(10);
+            $factions = Cache::remember('factions_index', 300, function () {
+                return Faction::paginate(10);
+            });
 
             // Log success with the total number of factions
             Log::info('Retrieved factions', ['faction_count' => $factions->total()]);
@@ -47,7 +50,9 @@ class FactionController extends Controller
     public function show($id) {
         try {
             // Fetch the faction by ID or throw a 404 if not found
-            $faction = Faction::findOrFail($id);
+            $faction = Cache::remember("faction_{$id}", 300, function () use ($id) {
+                return Faction::findOrFail($id);
+            });
 
             // Check if the user is authorized to view the faction
             $this->authorize('view', $faction);
@@ -80,6 +85,9 @@ class FactionController extends Controller
             // Create a new faction using validated request data
             $faction = Faction::create($request->validated());
 
+            // Clear the factions index cache to ensure fresh data
+            Cache::forget('factions_index');
+
             // Log the creation with the new faction ID
             Log::info('Faction created', ['faction_id' => $faction->id]);
 
@@ -111,6 +119,10 @@ class FactionController extends Controller
 
             // Update the faction with validated request data
             $faction->update($request->validated());
+
+            // Clear the factions index cache to ensure fresh data
+            Cache::forget("faction_{$id}");
+            Cache::forget('factions_index');
 
             // Log the update with the faction ID
             Log::info('Faction updated', ['faction_id' => $faction->id]);
@@ -146,6 +158,9 @@ class FactionController extends Controller
             // Soft delete the faction (it won't be permanently removed)
             $faction->delete();
 
+            // Clear the factions index cache to ensure fresh data
+            Cache::forget('factions_index');
+
             // Log the deletion with the faction ID
             Log::info('Faction deleted', ['faction_id' => $factionId]);
 
@@ -177,6 +192,9 @@ class FactionController extends Controller
             // Restore the faction (remove it from soft-deleted state)
             $faction->restore();
 
+            // Clear the factions index cache to ensure fresh data
+            Cache::forget('factions_index');
+
             // Log the restoration with the faction ID
             Log::info('Faction restored', ['faction_id' => $faction->id]);
 
@@ -207,6 +225,9 @@ class FactionController extends Controller
 
             // Permanently delete the faction (remove it from the database entirely)
             $faction->forceDelete();
+
+            // Clear the factions index cache to ensure fresh data
+            Cache::forget('factions_index');
 
             // Log the permanent deletion with the faction ID
             Log::info('Faction permanently deleted', ['faction_id' => $faction->id]);

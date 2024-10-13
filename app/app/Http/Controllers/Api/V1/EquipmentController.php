@@ -6,6 +6,7 @@ use App\Exceptions\ApiException;
 use App\Http\Requests\EquipmentRequest;
 use App\Http\Resources\EquipmentResource;
 use App\Models\Equipment;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -22,7 +23,9 @@ class EquipmentController extends Controller
             $this->authorize('viewAny', Equipment::class);
 
             // Fetch equipment with pagination (10 per page)
-            $equipments = Equipment::paginate(10);
+            $equipments = Cache::remember('equipments_index', 300, function () {
+                return Equipment::paginate(10);
+            });
 
             // Log success with the total number of equipment fetched
             Log::info('Fetched equipments', ['equipment_count' => $equipments->total()]);
@@ -47,7 +50,9 @@ class EquipmentController extends Controller
     public function show($id) {
         try {
             // Fetch the equipment by ID or throw a 404 if not found
-            $equipment = Equipment::findOrFail($id);
+            $equipment = Cache::remember("equipment_{$id}", 300, function () use ($id) {
+                return Equipment::findOrFail($id);
+            });
 
             // Check if the user is authorized to view the equipment
             $this->authorize('view', $equipment);
@@ -80,6 +85,9 @@ class EquipmentController extends Controller
             // Create a new equipment entry using validated request data
             $equipment = Equipment::create($request->validated());
 
+            // Clear the equipments index cache to ensure fresh data
+            Cache::forget('equipments_index');
+
             // Log the creation with the new equipment ID
             Log::info('Equipment created', ['equipment_id' => $equipment->id]);
 
@@ -111,6 +119,10 @@ class EquipmentController extends Controller
 
             // Update the equipment with validated request data
             $equipment->update($request->validated());
+
+            // Clear the specific equipment cache after update
+            Cache::forget("equipment_{$id}");
+            Cache::forget('equipments_index');
 
             // Log the update with the equipment ID
             Log::info('Equipment updated', ['equipment_id' => $equipment->id]);
@@ -146,6 +158,9 @@ class EquipmentController extends Controller
             // Soft delete the equipment (it won't be permanently removed)
             $equipment->delete();
 
+            // Clear the equipments index cache to ensure fresh data
+            Cache::forget('equipments_index');
+
             // Log the deletion with the equipment ID
             Log::info('Equipment deleted', ['equipment_id' => $equipmentId]);
 
@@ -177,6 +192,9 @@ class EquipmentController extends Controller
             // Restore the equipment (remove it from soft-deleted state)
             $equipment->restore();
 
+            // Clear the equipments index cache to ensure fresh data
+            Cache::forget('equipments_index');
+
             // Log the restoration with the equipment ID
             Log::info('Equipment restored', ['equipment_id' => $equipment->id]);
 
@@ -207,6 +225,9 @@ class EquipmentController extends Controller
 
             // Permanently delete the equipment (remove it from the database entirely)
             $equipment->forceDelete();
+
+            // Clear the equipments index cache to ensure fresh data
+            Cache::forget('equipments_index');
 
             // Log the permanent deletion with the equipment ID
             Log::info('Equipment permanently deleted', ['equipment_id' => $equipment->id]);
