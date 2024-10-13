@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   php:
-    image: graphicresources/itpg-api-coding-task:development
+    image: ghcr.io/ralonsogit/lotr-api:latest
     working_dir: /var/www
     command: php -S 0.0.0.0:8080 -t public
     environment:
@@ -13,6 +13,9 @@ services:
       - ./app:/var/www
     networks:
       - bridge
+    depends_on:
+      - db
+      - redis
 
   db:
     image: percona:5.7
