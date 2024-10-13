@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -24,6 +25,28 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception): JsonResponse
     {
+        // Custom exception for API
+        if ($request->expectsJson()) {
+            // ApiException, NotAdminException
+            if ($exception instanceof ApiException || $exception instanceof NotAdminException) {
+                return $exception->toResponse($request);
+            }
+
+            // Any exception on JSON call
+            $statusCode = 500;
+            if ($exception instanceof HttpException) {
+                $statusCode = $exception->getStatusCode();
+            } else {
+                $statusCode = $exception->getCode() ? ($exception->getCode() < 100 ? 500 : $exception->getCode()) : 500;
+            }
+            $apiException = new ApiException(
+                $exception->getMessage() ?? 'Something went wrong',
+                $statusCode,
+            );
+            return $apiException->toResponse($request);
+        }
+
+        // Laravel web exceptions
         return parent::render($request, $exception);
     }
 
@@ -32,14 +55,6 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        // Handling ApiException globally
-        $this->renderable(function (ApiException $e, $request) {
-            return $e->toResponse($request);
-        });
-
-        // Handling NotAdminException globally
-        $this->renderable(function (NotAdminException $e, $request) {
-            return $e->toResponse($request);
-        });
+        //
     }
 }
