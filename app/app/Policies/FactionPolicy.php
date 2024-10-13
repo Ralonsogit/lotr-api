@@ -2,9 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Faction;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class FactionPolicy
 {
@@ -50,7 +48,7 @@ class FactionPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Faction $faction): bool
+    public function restore(User $user): bool
     {
         return $user->is_admin === 1;
     }
@@ -58,7 +56,7 @@ class FactionPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Faction $faction): bool
+    public function forceDelete(User $user): bool
     {
         return $user->is_admin === 1;
     }
