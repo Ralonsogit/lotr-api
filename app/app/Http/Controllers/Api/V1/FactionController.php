@@ -180,8 +180,8 @@ class FactionController extends Controller
             // Log the restoration with the faction ID
             Log::info('Faction restored', ['faction_id' => $faction->id]);
 
-            // Return a success message with a 200 status code
-            return response()->json(['message' => 'Faction restored successfully'], 200);
+            // Return the restored element with a 200 status code
+            return response()->json(new FactionResource($faction), 200);
         } catch (Throwable $th) {
             // Log the error if faction restoration fails
             Log::error('Failed to restore faction', ['error' => $th->getMessage()]);
@@ -211,8 +211,8 @@ class FactionController extends Controller
             // Log the permanent deletion with the faction ID
             Log::info('Faction permanently deleted', ['faction_id' => $faction->id]);
 
-            // Return a success message with a 200 status code
-            return response()->json(['message' => 'Faction permanently deleted successfully'], 200);
+            // Return a 204 status with no content (successful deletion)
+            return response()->noContent();
         } catch (Throwable $th) {
             // Log the error if permanent deletion fails
             Log::error('Failed to permanently delete faction', ['error' => $th->getMessage()]);

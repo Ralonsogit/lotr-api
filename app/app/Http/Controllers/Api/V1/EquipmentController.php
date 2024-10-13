@@ -180,8 +180,8 @@ class EquipmentController extends Controller
             // Log the restoration with the equipment ID
             Log::info('Equipment restored', ['equipment_id' => $equipment->id]);
 
-            // Return a success message with a 200 status code
-            return response()->json(['message' => 'Equipment restored successfully'], 200);
+            // Return the restored element with a 200 status code
+            return response()->json(new EquipmentResource($equipment), 200);
         } catch (Throwable $th) {
             // Log the error if equipment restoration fails
             Log::error('Failed to restore equipment', ['error' => $th->getMessage()]);
@@ -211,8 +211,8 @@ class EquipmentController extends Controller
             // Log the permanent deletion with the equipment ID
             Log::info('Equipment permanently deleted', ['equipment_id' => $equipment->id]);
 
-            // Return a success message with a 200 status code
-            return response()->json(['message' => 'Equipment permanently deleted successfully'], 200);
+            // Return a 204 status with no content (successful deletion)
+            return response()->noContent();
         } catch (Throwable $th) {
             // Log the error if permanent deletion fails
             Log::error('Failed to permanently delete equipment', ['error' => $th->getMessage()]);
