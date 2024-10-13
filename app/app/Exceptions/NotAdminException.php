@@ -10,7 +10,7 @@ class NotAdminException extends Exception
     protected $message = 'You must be an admin user';
     protected $code = 403;
 
-    public function toResponse($request): JsonResponse
+    public function toResponse(): JsonResponse
     {
         return response()->json([
             'message' => $this->message

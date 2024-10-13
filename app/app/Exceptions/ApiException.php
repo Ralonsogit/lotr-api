@@ -15,7 +15,7 @@ class ApiException extends Exception
         $this->errors = $errors;
     }
 
-    public function toResponse($request): JsonResponse
+    public function toResponse(): JsonResponse
     {
         return response()->json([
             'status' => false,
