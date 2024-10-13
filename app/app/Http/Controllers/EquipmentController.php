@@ -39,6 +39,34 @@ class EquipmentController extends Controller
     }
 
     /**
+     * Retrieve a specific equipment by its ID.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id) {
+        try {
+            // Fetch the equipment by ID or throw a 404 if not found
+            $equipment = Equipment::findOrFail($id);
+
+            // Check if the user is authorized to view the equipment
+            $this->authorize('view', $equipment);
+
+            // Log the retrieval with the equipment ID
+            Log::info('Fetched equipment', ['equipment_id' => $equipment->id]);
+
+            // Return the equipment resource with a 200 status code
+            return response()->json(new EquipmentResource($equipment), 200);
+        } catch (Throwable $th) {
+            // Log the error if equipment retrieval fails
+            Log::error('Failed to retrieve equipment', ['error' => $th->getMessage()]);
+
+            // Throw a custom API exception with a 404 status code
+            throw new ApiException('Equipment not found', 404);
+        }
+    }
+
+    /**
      * Store a newly created equipment in the database.
      *
      * @param EquipmentRequest $request

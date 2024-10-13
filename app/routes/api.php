@@ -48,10 +48,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Factions
     Route::get('/factions', [FactionController::class, 'index']);
+    Route::get('/factions/{id}', [FactionController::class, 'show']);
 
     // Equipments
     Route::get('/equipments', [EquipmentController::class, 'index']);
+    Route::get('/equipments/{id}', [EquipmentController::class, 'show']);
 
     // Characters
     Route::get('/characters', [CharacterController::class, 'index']);
+    Route::get('/characters/{id}', [CharacterController::class, 'show']);
 });

@@ -39,6 +39,34 @@ class CharacterController extends Controller
     }
 
     /**
+     * Retrieve a specific character by its ID.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id) {
+        try {
+            // Fetch the character by ID or throw a 404 if not found
+            $character = Character::findOrFail($id);
+
+            // Check if the user is authorized to view the character
+            $this->authorize('view', $character);
+
+            // Log the retrieval with the character ID
+            Log::info('Fetched character', ['character_id' => $character->id]);
+
+            // Return the character resource with a 200 status code
+            return response()->json(new CharacterResource($character->load(['equipment', 'faction'])), 200);
+        } catch (Throwable $th) {
+            // Log the error if character retrieval fails
+            Log::error('Failed to retrieve character', ['error' => $th->getMessage()]);
+
+            // Throw a custom API exception with a 404 status code
+            throw new ApiException('Character not found', 404);
+        }
+    }
+
+    /**
      * Store a newly created character in the database.
      *
      * @param CharacterRequest $request

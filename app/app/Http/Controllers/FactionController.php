@@ -39,6 +39,34 @@ class FactionController extends Controller
     }
 
     /**
+     * Retrieve a specific faction by its ID.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id) {
+        try {
+            // Fetch the faction by ID or throw a 404 if not found
+            $faction = Faction::findOrFail($id);
+
+            // Check if the user is authorized to view the faction
+            $this->authorize('view', $faction);
+
+            // Log the retrieval with the faction ID
+            Log::info('Fetched faction', ['faction_id' => $faction->id]);
+
+            // Return the faction resource with a 200 status code
+            return response()->json(new FactionResource($faction), 200);
+        } catch (Throwable $th) {
+            // Log the error if faction retrieval fails
+            Log::error('Failed to retrieve faction', ['error' => $th->getMessage()]);
+
+            // Throw a custom API exception with a 404 status code
+            throw new ApiException('Faction not found', 404);
+        }
+    }
+
+    /**
      * Store a newly created faction in the database.
      *
      * @param FactionRequest $request
