@@ -11,10 +11,14 @@
 
 ```bash
 git clone https://github.com/Ralonsogit/lotr-api.git
-docker compose up -d
+docker compose up
+```
+
+For testing:
+
+```bash
 docker-compose exec php sh
-Composer install
-php artisan migrate –seed
+php artisan test
 ```
 
 There is a custom artisan command which truncate users, factions, equipments and characters tables, and seed them. Just in case you need it.

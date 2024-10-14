@@ -4,7 +4,12 @@ services:
   php:
     image: ghcr.io/ralonsogit/lotr-api:latest
     working_dir: /var/www
-    command: sh -c "php artisan migrate --database=lotr --seed && php artisan migrate --database=testing_db && php -S 0.0.0.0:8080 -t public"
+    command: >
+      sh -c "cp .env.example .env &&
+      composer install &&
+      php artisan migrate --seed --force &&
+      php artisan migrate --env=testing --force &&
+      php -S 0.0.0.0:8080 -t public"
     environment:
       docker: "true"
     ports:
