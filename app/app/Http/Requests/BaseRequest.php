@@ -42,6 +42,12 @@ class BaseRequest extends FormRequest
     {
         $input = $this->all();
         $allowedKeys = array_keys($this->rules());
+
+        // Filter allowed keys to include those that are in rules and those ending with '_confirmation'
+        $allowedKeys = array_merge($allowedKeys, array_filter(array_keys($input), function ($key) {
+            return str_ends_with($key, '_confirmation');
+        }));
+
         $extraFields = array_diff(array_keys($input), $allowedKeys);
 
         // If more than required fields, throw exception
