@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
@@ -31,6 +32,13 @@ class Handler extends ExceptionHandler
             if ($exception instanceof ApiException || $exception instanceof NotAdminException) {
                 return $exception->toResponse($request);
             }
+            if ($exception instanceof ValidationException) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $exception->getMessage(),
+                    'errors' => $exception->errors(),
+                ], 400);
+            }
 
             // Any exception on JSON call
             $statusCode = 500;
@@ -40,7 +48,7 @@ class Handler extends ExceptionHandler
                 $statusCode = $exception->getCode() ? ($exception->getCode() < 100 ? 500 : $exception->getCode()) : 500;
             }
             $apiException = new ApiException(
-                $exception->getMessage() ?? 'Something went wrong',
+                'Something went wrong',
                 $statusCode,
             );
             return $apiException->toResponse($request);

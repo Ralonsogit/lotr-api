@@ -13,7 +13,8 @@ class NotAdminException extends Exception
     public function toResponse(): JsonResponse
     {
         return response()->json([
-            'message' => $this->message
+            'message' => $this->message,
+            'success' => false,
         ], $this->code);
     }
 }
