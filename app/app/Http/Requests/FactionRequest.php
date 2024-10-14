@@ -2,6 +2,16 @@
 
 namespace App\Http\Requests;
 
+/**
+ * @OA\Schema(
+ *     schema="FactionRequest",
+ *     type="object",
+ *     required={"faction_name", "description"},
+ *     @OA\Property(property="faction_name", type="string", maxLength=128, example="The Fellowship of the Ring"),
+ *     @OA\Property(property="description", type="string", maxLength=65535, example="A group formed to destroy the One Ring.")
+ * )
+ */
+
 class FactionRequest extends BaseRequest
 {
     /**

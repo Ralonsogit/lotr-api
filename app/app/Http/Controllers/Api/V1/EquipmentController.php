@@ -9,13 +9,32 @@ use App\Models\Equipment;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(
+ *     name="Equipments",
+ *     description="API endpoints for managing equipments"
+ * )
+ */
 class EquipmentController extends Controller
 {
     /**
-     * Retrieve a paginated list of equipment.
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/equipments",
+     *     tags={"Equipments"},
+     *     summary="Retrieve a paginated list of equipment",
+     *     @OA\Response(
+     *         response=200,
+     *         description="A paginated list of equipment",
+     *         @OA\JsonContent(ref="#/components/schemas/EquipmentResource")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to retrieve equipments"
+     *     ),
+     *     security={{"bearerAuth": {}}},
+     * )
      */
     public function index() {
         try {
@@ -42,10 +61,28 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Retrieve a specific equipment by its ID.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/equipments/{id}",
+     *     tags={"Equipments"},
+     *     summary="Retrieve a specific equipment by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the equipment",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Equipment found",
+     *         @OA\JsonContent(ref="#/components/schemas/EquipmentResource")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Equipment not found"
+     *     ),
+     *     security={{"bearerAuth": {}}},
+     * )
      */
     public function show($id) {
         try {
@@ -72,10 +109,25 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Store a newly created equipment in the database.
-     *
-     * @param EquipmentRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/v1/equipments",
+     *     tags={"Equipments"},
+     *     summary="Store a newly created equipment in the database",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/EquipmentRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Equipment created",
+     *         @OA\JsonContent(ref="#/components/schemas/EquipmentResource")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to create equipment"
+     *     ),
+     *     security={{"bearerAuth": {}}},
+     * )
      */
     public function store(EquipmentRequest $request) {
         try {
@@ -103,11 +155,32 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Update the specified equipment in the database.
-     *
-     * @param EquipmentRequest $request
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Put(
+     *     path="/api/v1/equipments/{id}",
+     *     tags={"Equipments"},
+     *     summary="Update the specified equipment in the database",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the equipment to update",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/EquipmentRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Equipment updated",
+     *         @OA\JsonContent(ref="#/components/schemas/EquipmentResource")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to update equipment"
+     *     ),
+     *     security={{"bearerAuth": {}}},
+     * )
      */
     public function update(EquipmentRequest $request, $id) {
         try {
@@ -139,10 +212,27 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Soft delete the specified equipment in the database.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Delete(
+     *     path="/api/v1/equipments/{id}",
+     *     tags={"Equipments"},
+     *     summary="Soft delete the specified equipment in the database",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the equipment to delete",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Equipment deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to delete equipment"
+     *     ),
+     *     security={{"bearerAuth": {}}},
+     * )
      */
     public function destroy($id) {
         try {
@@ -176,10 +266,28 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Restore a soft-deleted equipment.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/v1/equipments/{id}/restore",
+     *     tags={"Equipments"},
+     *     summary="Restore a soft-deleted equipment",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the equipment to restore",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Equipment restored",
+     *         @OA\JsonContent(ref="#/components/schemas/EquipmentResource")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to restore equipment"
+     *     ),
+     *     security={{"bearerAuth": {}}},
+     * )
      */
     public function restore($id) {
         try {
@@ -210,10 +318,27 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Permanently delete a soft-deleted equipment from the database (force delete).
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Delete(
+     *     path="/api/v1/equipments/{id}/force",
+     *     tags={"Equipments"},
+     *     summary="Permanently delete a soft-deleted equipment from the database",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the equipment to permanently delete",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Equipment permanently deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to permanently delete equipment"
+     *     ),
+     *     security={{"bearerAuth": {}}},
+     * )
      */
     public function forceDelete($id) {
         try {

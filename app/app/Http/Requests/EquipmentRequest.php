@@ -2,6 +2,17 @@
 
 namespace App\Http\Requests;
 
+/**
+ * @OA\Schema(
+ *     schema="EquipmentRequest",
+ *     type="object",
+ *     required={"name", "type", "made_by"},
+ *     @OA\Property(property="name", type="string", maxLength=128, example="Sword of Elendil"),
+ *     @OA\Property(property="type", type="string", maxLength=128, example="Sword"),
+ *     @OA\Property(property="made_by", type="string", maxLength=128, example="Elven Smiths")
+ * )
+ */
+
 class EquipmentRequest extends BaseRequest
 {
     /**

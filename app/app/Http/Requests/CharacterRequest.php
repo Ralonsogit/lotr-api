@@ -2,6 +2,19 @@
 
 namespace App\Http\Requests;
 
+/**
+ * @OA\Schema(
+ *     schema="CharacterRequest",
+ *     type="object",
+ *     required={"name", "birth_date", "kingdom", "equipment_id", "faction_id"},
+ *     @OA\Property(property="name", type="string", maxLength=128, example="Aragorn"),
+ *     @OA\Property(property="birth_date", type="string", format="date", example="1980-01-15"),
+ *     @OA\Property(property="kingdom", type="string", maxLength=128, example="Gondor"),
+ *     @OA\Property(property="equipment_id", type="integer", example=1),
+ *     @OA\Property(property="faction_id", type="integer", example=2)
+ * )
+ */
+
 class CharacterRequest extends BaseRequest
 {
     /**

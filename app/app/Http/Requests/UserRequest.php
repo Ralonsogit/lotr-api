@@ -1,7 +1,17 @@
 <?php
 
 namespace App\Http\Requests;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Schema(
+ *     schema="UserRequest",
+ *     required={"name", "email", "password"},
+ *     @OA\Property(property="name", type="string"),
+ *     @OA\Property(property="email", type="string", format="email"),
+ *     @OA\Property(property="password", type="string"),
+ * )
+ */
 class UserRequest extends BaseRequest
 {
     /**

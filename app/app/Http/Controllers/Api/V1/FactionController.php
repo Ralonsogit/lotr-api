@@ -9,13 +9,31 @@ use App\Models\Faction;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(
+ *     name="Factions",
+ *     description="API endpoints for managing factions"
+ * )
+ */
 class FactionController extends Controller
 {
     /**
-     * Retrieve a paginated list of factions.
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/factions",
+     *     tags={"Factions"},
+     *     summary="Retrieve a paginated list of factions",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful retrieval of factions",
+     *         @OA\JsonContent(ref="#/components/schemas/FactionResource")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to retrieve factions"
+     *     )
+     * )
      */
     public function index() {
         try {
@@ -42,10 +60,27 @@ class FactionController extends Controller
     }
 
     /**
-     * Retrieve a specific faction by its ID.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/factions/{id}",
+     *     tags={"Factions"},
+     *     summary="Retrieve a specific faction by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the faction to retrieve",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful retrieval of faction",
+     *         @OA\JsonContent(ref="#/components/schemas/FactionResource")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Faction not found"
+     *     )
+     * )
      */
     public function show($id) {
         try {
@@ -72,10 +107,24 @@ class FactionController extends Controller
     }
 
     /**
-     * Store a newly created faction in the database.
-     *
-     * @param FactionRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/v1/factions",
+     *     tags={"Factions"},
+     *     summary="Store a newly created faction",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/FactionRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Faction created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/FactionResource")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to create faction"
+     *     )
+     * )
      */
     public function store(FactionRequest $request) {
         try {
@@ -103,11 +152,31 @@ class FactionController extends Controller
     }
 
     /**
-     * Update the specified faction in the database.
-     *
-     * @param FactionRequest $request
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Put(
+     *     path="/api/v1/factions/{id}",
+     *     tags={"Factions"},
+     *     summary="Update the specified faction",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the faction to update",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/FactionRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Faction updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/FactionResource")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to update faction"
+     *     )
+     * )
      */
     public function update(FactionRequest $request, $id) {
         try {
@@ -139,10 +208,26 @@ class FactionController extends Controller
     }
 
     /**
-     * Soft delete the specified faction in the database.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Delete(
+     *     path="/api/v1/factions/{id}",
+     *     tags={"Factions"},
+     *     summary="Soft delete the specified faction",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the faction to delete",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Faction deleted successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to delete faction"
+     *     )
+     * )
      */
     public function destroy($id) {
         try {
@@ -176,10 +261,27 @@ class FactionController extends Controller
     }
 
     /**
-     * Restore a soft-deleted faction.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/v1/factions/{id}/restore",
+     *     tags={"Factions"},
+     *     summary="Restore a soft-deleted faction",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the faction to restore",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Faction restored successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/FactionResource")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Faction not found"
+     *     )
+     * )
      */
     public function restore($id) {
         try {
@@ -210,10 +312,26 @@ class FactionController extends Controller
     }
 
     /**
-     * Permanently delete a faction from the database (force delete).
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Delete(
+     *     path="/api/v1/factions/{id}/force",
+     *     tags={"Factions"},
+     *     summary="Permanently delete a faction",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the faction to permanently delete",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Faction permanently deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Faction not found"
+     *     )
+     * )
      */
     public function forceDelete($id) {
         try {

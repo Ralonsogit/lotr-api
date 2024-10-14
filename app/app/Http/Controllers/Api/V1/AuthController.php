@@ -12,10 +12,46 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Throwable;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\OpenApi(
+ *     @OA\Info(
+ *         title="Auth API",
+ *         version="1.0.0",
+ *         description="Auth API description"
+ *     )
+ * )
+ */
+
+/**
+ * @OA\Tag(
+ *     name="Auth",
+ *     description="API endpoints for user authentication"
+ * )
+ */
 class AuthController extends Controller
 {
-    // Register method
+    /**
+     * @OA\Post(
+     *     path="/api/v1/auth/register",
+     *     tags={"Auth"},
+     *     summary="Register a new user",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/UserRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User registered successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to register user"
+     *     )
+     * )
+     */
     public function register(UserRequest $request)
     {
         try {
@@ -35,7 +71,33 @@ class AuthController extends Controller
         }
     }
 
-    // Login method
+    /**
+     * @OA\Post(
+     *     path="/api/v1/auth/login",
+     *     tags={"Auth"},
+     *     summary="Login a user and retrieve a token",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/LoginRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful login",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string", example="your_access_token_here"),
+     *             @OA\Property(property="token_type", type="string", example="Bearer")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - Invalid credentials"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Unable to log in"
+     *     )
+     * )
+     */
     public function login(LoginRequest $request, AuthService $authService)
     {
         try {
@@ -51,7 +113,7 @@ class AuthController extends Controller
             return response()->json([
                 'access_token' => $token,
                 'token_type' => 'Bearer',
-            ]);
+            ], 200);
         } catch (ApiException $e) {
             // Log error
             Log::error('ApiException when logging user:', ['user_id' => $request->user()->id]);
@@ -63,7 +125,21 @@ class AuthController extends Controller
         }
     }
 
-    // Logout method
+    /**
+     * @OA\Post(
+     *     path="/api/v1/auth/logout",
+     *     tags={"Auth"},
+     *     summary="Logout a user and invalidate the token",
+     *     @OA\Response(
+     *         response=204,
+     *         description="Successful logout"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized - User not logged in"
+     *     )
+     * )
+     */
     public function logout(Request $request)
     {
         try {

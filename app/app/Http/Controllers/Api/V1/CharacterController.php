@@ -9,13 +9,23 @@ use App\Models\Character;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Throwable;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Tag(
+ *     name="Characters",
+ *     description="Endpoints for managing characters."
+ * )
+ */
 class CharacterController extends Controller
 {
     /**
-     * Retrieve a paginated list of characters along with their equipment and faction relationships.
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/characters",
+     *     tags={"Characters"},
+     *     summary="Retrieve a paginated list of characters",
+     *     @OA\Response(response="200", description="A paginated list of characters returned successfully.")
+     * )
      */
     public function index() {
         try {
@@ -42,10 +52,20 @@ class CharacterController extends Controller
     }
 
     /**
-     * Retrieve a specific character by its ID.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/api/v1/characters/{id}",
+     *     tags={"Characters"},
+     *     summary="Retrieve a specific character by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the character to retrieve",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response="200", description="Character retrieved successfully."),
+     *     @OA\Response(response="404", description="Character not found.")
+     * )
      */
     public function show($id) {
         try {
@@ -72,10 +92,17 @@ class CharacterController extends Controller
     }
 
     /**
-     * Store a newly created character in the database.
-     *
-     * @param CharacterRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/v1/characters",
+     *     tags={"Characters"},
+     *     summary="Store a newly created character",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/CharacterRequest")
+     *     ),
+     *     @OA\Response(response="201", description="Character created successfully."),
+     *     @OA\Response(response="400", description="Unable to create character.")
+     * )
      */
     public function store(CharacterRequest $request) {
         try {
@@ -103,11 +130,25 @@ class CharacterController extends Controller
     }
 
     /**
-     * Update the specified character in the database.
-     *
-     * @param CharacterRequest $request
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Put(
+     *     path="/api/v1/characters/{id}",
+     *     tags={"Characters"},
+     *     summary="Update a character",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the character to update",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/CharacterRequest")
+     *     ),
+     *     @OA\Response(response="200", description="Character updated successfully."),
+     *     @OA\Response(response="404", description="Character not found."),
+     *     @OA\Response(response="400", description="Unable to update character.")
+     * )
      */
     public function update(CharacterRequest $request, $id) {
         try {
@@ -139,10 +180,21 @@ class CharacterController extends Controller
     }
 
     /**
-     * Soft delete the specified character in the database.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Delete(
+     *     path="/api/v1/characters/{id}",
+     *     tags={"Characters"},
+     *     summary="Soft delete a character",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the character to delete",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response="204", description="Character deleted successfully."),
+     *     @OA\Response(response="404", description="Character not found."),
+     *     @OA\Response(response="400", description="Unable to delete character.")
+     * )
      */
     public function destroy($id) {
         try {
@@ -176,10 +228,21 @@ class CharacterController extends Controller
     }
 
     /**
-     * Restore a soft-deleted character.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/api/v1/characters/{id}/restore",
+     *     tags={"Characters"},
+     *     summary="Restore a soft-deleted character",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the character to restore",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response="200", description="Character restored successfully."),
+     *     @OA\Response(response="404", description="Character not found."),
+     *     @OA\Response(response="400", description="Unable to restore character.")
+     * )
      */
     public function restore($id) {
         try {
@@ -210,10 +273,21 @@ class CharacterController extends Controller
     }
 
     /**
-     * Permanently delete a soft-deleted character from the database (force delete).
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Delete(
+     *     path="/api/v1/characters/{id}/force-delete",
+     *     tags={"Characters"},
+     *     summary="Permanently delete a character",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the character to permanently delete",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response="204", description="Character permanently deleted successfully."),
+     *     @OA\Response(response="404", description="Character not found."),
+     *     @OA\Response(response="400", description="Unable to permanently delete character.")
+     * )
      */
     public function forceDelete($id) {
         try {

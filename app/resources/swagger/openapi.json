@@ -1,0 +1,1043 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "LOTR API",
+        "description": "Description of LOTR API",
+        "contact": {
+            "email": "admin@admin.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "url",
+            "description": "Demo API Server"
+        }
+    ],
+    "paths": {
+        "/api/v1/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user",
+                "operationId": "b9e746d77661fb8df55d0ac63e1ece77",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unable to register user"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login a user and retrieve a token",
+                "operationId": "a7997e7c1e3bfed64d4e56de82415931",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string",
+                                            "example": "your_access_token_here"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid credentials"
+                    },
+                    "400": {
+                        "description": "Unable to log in"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout a user and invalidate the token",
+                "operationId": "f6b8957b4c0b25636613a9f0512a8ba9",
+                "responses": {
+                    "204": {
+                        "description": "Successful logout"
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not logged in"
+                    }
+                }
+            }
+        },
+        "/api/v1/characters": {
+            "get": {
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Retrieve a paginated list of characters",
+                "operationId": "d15bf9b69dba07755d4c31b6c8944414",
+                "responses": {
+                    "200": {
+                        "description": "A paginated list of characters returned successfully."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Store a newly created character",
+                "operationId": "ed765ff69503e7e25318df57eca145a5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CharacterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Character created successfully."
+                    },
+                    "400": {
+                        "description": "Unable to create character."
+                    }
+                }
+            }
+        },
+        "/api/v1/characters/{id}": {
+            "get": {
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Retrieve a specific character by ID",
+                "operationId": "f9360ec9f5850d7ba238b2656a9f0202",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the character to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Character retrieved successfully."
+                    },
+                    "404": {
+                        "description": "Character not found."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Update a character",
+                "operationId": "8a25ed967a79e3b9d087c33626129c23",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the character to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CharacterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Character updated successfully."
+                    },
+                    "404": {
+                        "description": "Character not found."
+                    },
+                    "400": {
+                        "description": "Unable to update character."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Soft delete a character",
+                "operationId": "b6b554f97083f12ac30995d9eebdf617",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the character to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Character deleted successfully."
+                    },
+                    "404": {
+                        "description": "Character not found."
+                    },
+                    "400": {
+                        "description": "Unable to delete character."
+                    }
+                }
+            }
+        },
+        "/api/v1/characters/{id}/restore": {
+            "post": {
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Restore a soft-deleted character",
+                "operationId": "ea5073cc345109006c89b4e51c95147f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the character to restore",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Character restored successfully."
+                    },
+                    "404": {
+                        "description": "Character not found."
+                    },
+                    "400": {
+                        "description": "Unable to restore character."
+                    }
+                }
+            }
+        },
+        "/api/v1/characters/{id}/force-delete": {
+            "delete": {
+                "tags": [
+                    "Characters"
+                ],
+                "summary": "Permanently delete a character",
+                "operationId": "ec5fdc14515c593180875bba087afb6e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the character to permanently delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Character permanently deleted successfully."
+                    },
+                    "404": {
+                        "description": "Character not found."
+                    },
+                    "400": {
+                        "description": "Unable to permanently delete character."
+                    }
+                }
+            }
+        },
+        "/api/v1/equipments": {
+            "get": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Retrieve a paginated list of equipment",
+                "operationId": "f86b74aa4a259ea785d20e91f2141603",
+                "responses": {
+                    "200": {
+                        "description": "A paginated list of equipment",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unable to retrieve equipments"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Store a newly created equipment in the database",
+                "operationId": "c2839e2f416411b6d3355f47f1379f59",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EquipmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Equipment created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unable to create equipment"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/equipments/{id}": {
+            "get": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Retrieve a specific equipment by its ID",
+                "operationId": "587bbc9b68d2f89e18e79a55b20443f8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the equipment",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Equipment found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Equipment not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Update the specified equipment in the database",
+                "operationId": "c6e9885e2346872856ec59f4f9d94378",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the equipment to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EquipmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Equipment updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unable to update equipment"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Soft delete the specified equipment in the database",
+                "operationId": "d69a0ecf9f87a5332fb3083933b1fc4b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the equipment to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Equipment deleted"
+                    },
+                    "400": {
+                        "description": "Unable to delete equipment"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/equipments/{id}/restore": {
+            "post": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Restore a soft-deleted equipment",
+                "operationId": "823696af11bb8b37d79ec431e0b2e6c3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the equipment to restore",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Equipment restored",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unable to restore equipment"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/equipments/{id}/force": {
+            "delete": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Permanently delete a soft-deleted equipment from the database",
+                "operationId": "3bf8ccb19d463af14a538e586ad9dabe",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the equipment to permanently delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Equipment permanently deleted"
+                    },
+                    "400": {
+                        "description": "Unable to permanently delete equipment"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/factions": {
+            "get": {
+                "tags": [
+                    "Factions"
+                ],
+                "summary": "Retrieve a paginated list of factions",
+                "operationId": "fe977d45abb091a5d90329fc87a6b077",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of factions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FactionResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unable to retrieve factions"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Factions"
+                ],
+                "summary": "Store a newly created faction",
+                "operationId": "81b16f38b90aa8fa6c3fa78158588bb7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FactionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Faction created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FactionResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unable to create faction"
+                    }
+                }
+            }
+        },
+        "/api/v1/factions/{id}": {
+            "get": {
+                "tags": [
+                    "Factions"
+                ],
+                "summary": "Retrieve a specific faction by its ID",
+                "operationId": "87f4d2c56a36f6ebab9e21a8e3f3fcbb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the faction to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of faction",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FactionResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Faction not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Factions"
+                ],
+                "summary": "Update the specified faction",
+                "operationId": "d912866c4a8a0c3c49ea0eec134d4549",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the faction to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FactionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Faction updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FactionResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Unable to update faction"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Factions"
+                ],
+                "summary": "Soft delete the specified faction",
+                "operationId": "f14ef7e48478d564062449f39151b426",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the faction to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Faction deleted successfully"
+                    },
+                    "400": {
+                        "description": "Unable to delete faction"
+                    }
+                }
+            }
+        },
+        "/api/v1/factions/{id}/restore": {
+            "post": {
+                "tags": [
+                    "Factions"
+                ],
+                "summary": "Restore a soft-deleted faction",
+                "operationId": "455454a61cd411a8e78791b33205b003",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the faction to restore",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Faction restored successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FactionResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Faction not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/factions/{id}/force": {
+            "delete": {
+                "tags": [
+                    "Factions"
+                ],
+                "summary": "Permanently delete a faction",
+                "operationId": "10e93fe86abfb65f78b870582510df27",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the faction to permanently delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Faction permanently deleted"
+                    },
+                    "404": {
+                        "description": "Faction not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CharacterRequest": {
+                "required": [
+                    "name",
+                    "birth_date",
+                    "kingdom",
+                    "equipment_id",
+                    "faction_id"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "example": "Aragorn"
+                    },
+                    "birth_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1980-01-15"
+                    },
+                    "kingdom": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "example": "Gondor"
+                    },
+                    "equipment_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "faction_id": {
+                        "type": "integer",
+                        "example": 2
+                    }
+                },
+                "type": "object"
+            },
+            "EquipmentRequest": {
+                "required": [
+                    "name",
+                    "type",
+                    "made_by"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "example": "Sword of Elendil"
+                    },
+                    "type": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "example": "Sword"
+                    },
+                    "made_by": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "example": "Elven Smiths"
+                    }
+                },
+                "type": "object"
+            },
+            "FactionRequest": {
+                "required": [
+                    "faction_name",
+                    "description"
+                ],
+                "properties": {
+                    "faction_name": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "example": "The Fellowship of the Ring"
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 65535,
+                        "example": "A group formed to destroy the One Ring."
+                    }
+                },
+                "type": "object"
+            },
+            "LoginRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UserRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CharacterResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Aragorn"
+                    },
+                    "birth_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1980-01-15"
+                    },
+                    "kingdom": {
+                        "type": "string",
+                        "example": "Gondor"
+                    },
+                    "equipment": {
+                        "$ref": "#/components/schemas/EquipmentResource"
+                    },
+                    "faction": {
+                        "$ref": "#/components/schemas/FactionResource"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-02T12:34:56Z"
+                    }
+                },
+                "type": "object"
+            },
+            "EquipmentResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Sword of Elendil"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "Sword"
+                    },
+                    "made_by": {
+                        "type": "string",
+                        "example": "Elven Smiths"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-02T12:34:56Z"
+                    }
+                },
+                "type": "object"
+            },
+            "FactionResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "faction_name": {
+                        "type": "string",
+                        "example": "The Fellowship of the Ring"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "A group formed to destroy the One Ring."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-02T12:34:56Z"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "API endpoints for user authentication"
+        },
+        {
+            "name": "Characters",
+            "description": "Endpoints for managing characters."
+        },
+        {
+            "name": "Equipments",
+            "description": "API endpoints for managing equipments"
+        },
+        {
+            "name": "Factions",
+            "description": "API endpoints for managing factions"
+        }
+    ]
+}
