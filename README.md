@@ -1,50 +1,58 @@
-# API Backend Coding Task
+# LOTR API
 
-This is the technical test project for API oriented backends.
+## Installation
 
-## Technical requirements
-
-- [Docker](https://www.docker.com/)
-
-## Build
+- Clone the repo
+- Copy .env.example to .env
+- Docker compose up
+- Connect to docker container (depends on your OS)
+- Install packages
+- Migrate and seed
 
 ```bash
-make build
+git clone https://github.com/Ralonsogit/lotr-api.git
+docker compose up -d
+docker-compose exec php sh
+Composer install
+php artisan migrate –seed
 ```
 
-This command executes the Docker image building process and performs the [Composer](https://getcomposer.org) dependencies installation.
+There is a custom artisan command which truncate users, factions, equipments and characters tables, and seed them. Just in case you need it.
 
----
+```bash
+php artisan db:truncate-seed
+```
 
-Type `make help` for more tasks present in `Makefile`.
+CI/CD: When you push into the repo there is a docker image that is updated in github container registry
 
-## Functional requirements
+## Documentation
 
-**Implement a CRUD (Create-Read-Update-Delete) API.**
+http://localhost:8080/swagger
 
-The following add-ons will be positively evaluated:
+## Postman collection
 
-- Authentication
-- Authorization
-- Cache
-- Documentation
+Import this collection into your postman
+/LOTR.postman_collection
 
----
+## Performs
 
-A light infrastructure is provided with a populated MySQL database with example data and a web server using PHP built-in development server.
+- Jobs and queues with supervisord
+- oAuth2 (Laravel/passport)
+- Monitoring tool cache (Laravel Telescope)
+- Update docker to copy .env, install composer and project, migrate when running the docker image
+- Add feature tests
+- Get unit tests better
+- Manage user roles properly with spatie/laravel-permission
+- CI/CD for production server
+- Better exceptions handling
 
-## Non functional requirements
+## Packages used
 
-- The presence of unit, integration and acceptance tests will positively appreciated.
-- Use whatever you want to achieve this: MVC, hexagonal arquitecture, DDD, etc.
-- A deep knowledge about SOLID, YAGNI or KISS would be positively evaluated.
-- DevOps knowledge (GitHub Actions, Jenkins, etc.) would be appreciated too.
-- It's important to find a balance between code quality and deadline; releasing a non functional application in time or a perfect application out of time may be negatively evaluated.
-- Good and well-documented commits will be appreciated.
-- Efficient and smart use of third party libraries will be positively appreciated.
-
----
-
-Beyond the requirements of this test we want to see what you can do, feel free to show us your real potential and, the
-most important part, have fun!
-
+- reliese/laravel
+- laravel/sanctum
+- darkaonline/l5-swagger
+- wotz/laravel-swagger-ui
+- zircote/swagger-php
+- predis/predis
+- fakerphp/faker
+- phpunit/phpunit
