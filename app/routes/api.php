@@ -29,16 +29,22 @@ Route::prefix('v1')->group(function() {
         Route::post('/factions', [FactionController::class, 'store']);
         Route::put('/factions/{id}', [FactionController::class, 'update']);
         Route::delete('/factions/{id}', [FactionController::class, 'destroy']);
+        Route::post('/factions/{id}/restore', [FactionController::class, 'restore']);
+        Route::delete('/factions/{id}/force', [FactionController::class, 'forceDelete']);
 
         // Equipments
         Route::post('/equipments', [EquipmentController::class, 'store']);
         Route::put('/equipments/{id}', [EquipmentController::class, 'update']);
         Route::delete('/equipments/{id}', [EquipmentController::class, 'destroy']);
+        Route::post('/equipments/{id}/restore', [FactionController::class, 'restore']);
+        Route::delete('/equipments/{id}/force', [FactionController::class, 'forceDelete']);
 
         // Characters
         Route::post('/characters', [CharacterController::class, 'store']);
         Route::put('/characters/{id}', [CharacterController::class, 'update']);
         Route::delete('/characters/{id}', [CharacterController::class, 'destroy']);
+        Route::post('/characters/{id}/restore', [FactionController::class, 'restore']);
+        Route::delete('/characters/{id}/force', [FactionController::class, 'forceDelete']);
     });
 
     Route::middleware('auth:sanctum')->group(function () {
